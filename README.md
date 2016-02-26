@@ -1,5 +1,8 @@
 # Reversi
-## Avtorja Avsec&amp;Golob: Projekt za Programiranje 2
+ Projekt za Programiranje 2
+## Avtorja: 
+* Miha Avsec
+* Jan Golob
 
 ## Pravila Igre:
  https://en.wikipedia.org/wiki/Reversi
