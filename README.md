@@ -4,8 +4,8 @@
 * Miha Avsec
 * Jan Golob
 
-## Pravila Igre:
+### Pravila Igre:
  https://en.wikipedia.org/wiki/Reversi
 
-## Igraj Reversi:
+### Igraj Reversi:
  http://www.gamesforthebrain.com/game/reversi/
