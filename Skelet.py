@@ -56,6 +56,15 @@ class Deska:
         else:
             print("Ilegalna poteza")
 
+    #vrne vse možne poteze za danega igralca
+    def moznosti(self,igralec):
+        izbor_potez = []
+        for x in range(1,9):
+            for y in range(1,9):
+                if self.legalno(igralec,(x,y))[0]:
+                    izbor_potez.append((x,y))
+        return izbor_potez
+
     #podobno kot mprint, le da ne izriše roba (ničel, ki jih imam zato da me program ne utopi z error)
     def izrisi(self):
         for i in self.ploskev[1:9]:
@@ -71,6 +80,7 @@ a = Deska("Jan", "Miha")
 a.postavi(0,(3,4))
 a.postavi(1,(3,3))
 a.izrisi()
+print(a.moznosti(0))
 
 #testing
 #
