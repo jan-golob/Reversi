@@ -52,7 +52,7 @@ class Deska:
         (a_je,polja) = self.legalno(igralec,poz)
         if a_je:
             for (m,n) in [poz]+polja:
-                a.ploskev[m][n] = self.protagonist(igralec)
+                self.ploskev[m][n] = self.protagonist(igralec)
         else:
             print("Ilegalna poteza")
 
