@@ -16,7 +16,20 @@ class Gui():
         canvas_height = rows * size
         
         self.napis = tk.StringVar(master, value="REVERSI")
-        tk.Label(master, textvariable=self.napis).grid(row=0, column=0)
+        tk.Label(master, textvariable=self.napis).grid(row=2, column=0)
+
+        # Glavni menu
+        menu = tk.Menu(master)
+        master.config(menu=menu) # Dodamo menu
+        # Naredimo podmenu "File"
+        file_menu = tk.Menu(menu)
+        recent_menu = tk.Menu(menu)
+        menu.add_cascade(label="Nastavitve", menu=file_menu)
+        file_menu.add_cascade(label="nacin igranja", menu=recent_menu)
+        # Dodamo izbire v file_menu
+        file_menu.add_separator() # To doda separator v menu
+        file_menu.add_command(label="Izhod", command=master.destroy)
+        recent_menu.add_command(label="igralec vs igralec", command=self.nastavitev_igralcev)
 
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
@@ -33,10 +46,6 @@ class Gui():
                 color = self.color1 if color == self.color2 else self.color2
 
 
-        self.canvas.bind("<ButtonRelease-1>", self.refresh)
-        self.canvas.bind("<Configure>", self.refresh)
-
-
         self.nastavitev_igralcev()
 
     def nastavitev_igralcev(self):
@@ -48,19 +57,33 @@ class Gui():
         self.igralec = True
         self.pl = sk.Deska()
         self.pl.izrisi()
+        self.refresh()
+        self.napis.set("modri igralec na potezi")
         self.igralec_1.igraj()
         
     def povleci_potezo(self, x, y):
         if self.igralec:
-            self.addpiece(player1,x,y)
-            self.pl.postavi(0,(x,y))
-            self.igralec = not self.igralec
-            self.igralec_2.igraj()
+            if self.pl.legalno(0,(x,y))[0]:
+                self.pl.postavi(0,(x,y))
+                self.addpiece(player2,x,y)
+                self.igralec = not self.igralec
+                self.refresh()
+                self.napis.set("beli igralec na potezi")
+                self.igralec_2.igraj()
+            else:
+                self.igralec_1.igraj()
+                self.napis.set("neveljavna poteza modri")
         else:
-            self.addpiece(player2,x,y)
-            self.pl.postavi(1,(x,y))       
-            self.igralec = not self.igralec
-            self.igralec_2.igraj()
+            if self.pl.legalno(1,(x,y))[0]:
+                self.pl.postavi(1,(x,y))
+                self.addpiece(player1,x,y)
+                self.igralec = not self.igralec
+                self.napis.set("modri igralec na potezi")
+                self.refresh()
+                self.igralec_2.igraj()
+            else:
+                self.igralec_1.igraj()
+                self.napis.set("neveljavna poteza beli")
 
     def addpiece(self, image, row, column):
         '''Doda figuro na igralno ploščo v kvadratek (row,column)'''
@@ -71,7 +94,7 @@ class Gui():
         self.canvas.create_image(x0,y0, image=image, tags="figura")
 
 
-    def refresh(self, event):
+    def refresh(self):
         """Izbriše dosedanje figure in jih ponovno nariše glede na novo matriko"""
 
         
@@ -102,7 +125,7 @@ class Clovek():
             
 if __name__ == "__main__":
     root = tk.Tk()
-    board = Gui(root)
     player1 = tk.PhotoImage(file = "white.gif")
     player2 = tk.PhotoImage(file = "blue.gif")
+    board = Gui(root)
     root.mainloop()
