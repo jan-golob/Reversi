@@ -1,40 +1,40 @@
 class Deska:
     def __init__(self, igralec1="B", igralec2="W"):
-       osnova = [[0]*10]+[[0]+[None]*8+[0] for _ in range(8)]+[[0]*10]
-       osnova[5][4] = igralec1
-       osnova[4][5] = igralec1
+       osnova =[[None]*8 for _ in range(8)]
+       osnova[4][3] = igralec1
+       osnova[3][4] = igralec1
+       osnova[3][3] = igralec2
        osnova[4][4] = igralec2
-       osnova[5][5] = igralec2
        self.ploskev = osnova
        self.vlogi = (igralec1,igralec2)
 
-    #metodi antagonist in protagonist sta trenutno vpleminintirani če bi hotel kdaj zamenjati oznaki (M) in (B) za kaj drugega, kot sem storil
-    #vrne nasprotnika, kjer je 0 prvi igralec(B) in 1 drugi igralec(M)
+    # metodi antagonist in protagonist sta trenutno vpleminintirani če bi hotel kdaj zamenjati oznaki (M) in (B) za kaj drugega, kot sem storil
+    # vrne nasprotnika, kjer je 0 prvi igralec(B) in 1 drugi igralec(M)
     def antagonist(self, igralec):
         if igralec == 0:
             return self.vlogi[1]
         else:
             return self.vlogi[0]
 
-    #vrne igralca, kjer je 0 prvi igralec(B) in 1 drugi igralec(M)
+    # vrne igralca, kjer je 0 prvi igralec(B) in 1 drugi igralec(M)
     def protagonist(self, igralec):
             return self.vlogi[igralec]
 
-    #pogleda če je možno na mesto postaviti figuro, če je vrne poleg True tudi seznam figur ki se zamenjajo, če nanje postavimo figuro.
+    # pogleda če je možno na mesto postaviti figuro, če je vrne poleg True tudi seznam figur ki se zamenjajo, če nanje postavimo figuro.
     def legalno (self, igralec, polozaj):
         (x,y) = polozaj
         if self.ploskev[x][y] != None:
             # print ("napaka!!!")
             return (False,None)
         menjaj = []
-        #pogleda po vseh osmih smereh
+        # pogleda po vseh osmih smereh
         for (a,b) in [(1,0),(1,1),(0,1),(-1,1),(-1,0),(-1,-1),(0,-1),(1,-1)]:
-            #čej je na tem sosednjem polju nasprotnik
-            if (self.ploskev[x+a][y+b]) == self.antagonist(igralec):
+            # prvo pogleda, če je sploh v matriki
+            if (x+a in range(8)) and (y+b in range(8)) and (self.ploskev[x+a][y+b]) == self.antagonist(igralec):
                 (xt,yt) = (x+a,y+b)
                 menjaj_temp = []
-                #nato si zapomni vrsto
-                while (self.ploskev[xt][yt]) == self.antagonist(igralec):
+                # nato si zapomni vrsto
+                while (self.ploskev[xt][yt]) == self.antagonist(igralec) and (x+a in range(8)) and (y+b in range(8)):
                     menjaj_temp += [(xt,yt)]
                     xt += a
                     yt += b
@@ -47,7 +47,7 @@ class Deska:
             return (True,menjaj)
 
 
-    #postavi figuro igralca če je mogoče, na dano pozicijo in obrne žetone, ki jih je potrebno
+    # postavi figuro igralca če je mogoče, na dano pozicijo in obrne žetone, ki jih je potrebno
     def postavi(self, igralec, poz):
         (a_je,polja) = self.legalno(igralec,poz)
         if a_je:
@@ -56,32 +56,32 @@ class Deska:
         else:
             print("Ilegalna poteza")
 
-    #vrne vse možne poteze za danega igralca
+    # vrne vse možne poteze za danega igralca
     def moznosti(self,igralec):
         izbor_potez = []
-        for x in range(1,9):
-            for y in range(1,9):
+        for x in range(8):
+            for y in range(8):
                 if self.legalno(igralec,(x,y))[0]:
                     izbor_potez.append((x,y))
         return izbor_potez
 
-    #podobno kot mprint, le da ne izriše roba (ničel, ki jih imam zato da me program ne utopi z error)
+    # podobno kot mprint, le da ne izriše roba (ničel, ki jih imam zato da me program ne utopi z error)
+    # zdaj sem to zbrisal ker v tem primeru avsca GUI zalije z erori
     def izrisi(self):
-        for i in self.ploskev[1:9]:
-            print(i[1:9])
+        for i in self.ploskev:
+            print(i)
 
-#natisne matriko na malo bolj pregleden način
+
+# natisne matriko na malo bolj pregleden način
 def mprint (m):
     for i in m:
         print (i)
 
 
-a = Deska("Jan", "Miha")
-a.postavi(0,(3,4))
-a.postavi(1,(3,3))
+a = Deska()
+print(a.legalno(0,(2,3)))
+a.postavi(0,(2,3))
 a.izrisi()
-print(a.moznosti(0))
-
 #testing
 #
 # a = Deska("a","b")
