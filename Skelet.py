@@ -33,12 +33,14 @@ class Deska:
             if (x+a in range(8)) and (y+b in range(8)) and (self.ploskev[x+a][y+b]) == self.antagonist(igralec):
                 (xt,yt) = (x+a,y+b)
                 menjaj_temp = []
+                na_deski= ((xt in range(8)) and (yt in range(8)))
                 # nato si zapomni vrsto
-                while (xt in range(8)) and (yt in range(8)) and (self.ploskev[xt][yt]) == self.antagonist(igralec):
+                while na_deski and (self.ploskev[xt][yt]) == self.antagonist(igralec):
                     menjaj_temp += [(xt,yt)]
                     xt += a
                     yt += b
-                if (xt in range(8)) and (yt in range(8)) and (self.ploskev[xt][yt] == self.protagonist(igralec)):
+                    na_deski = ((xt in range(8)) and (yt in range(8)))
+                if na_deski and (self.ploskev[xt][yt] == self.protagonist(igralec)):
                     menjaj += menjaj_temp
         #pogleda če se s postavitvjo na to mesto zamenja kaj žetonov, če se ne potem to ni legalna poteza
         if len(menjaj) == 0:
