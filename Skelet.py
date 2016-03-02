@@ -34,11 +34,11 @@ class Deska:
                 (xt,yt) = (x+a,y+b)
                 menjaj_temp = []
                 # nato si zapomni vrsto
-                while (self.ploskev[xt][yt]) == self.antagonist(igralec) and (x+a in range(8)) and (y+b in range(8)):
+                while (xt in range(8)) and (yt in range(8)) and (self.ploskev[xt][yt]) == self.antagonist(igralec):
                     menjaj_temp += [(xt,yt)]
                     xt += a
                     yt += b
-                if self.ploskev[xt][yt] == self.protagonist(igralec):
+                if (xt in range(8)) and (yt in range(8)) and (self.ploskev[xt][yt] == self.protagonist(igralec)):
                     menjaj += menjaj_temp
         #pogleda če se s postavitvjo na to mesto zamenja kaj žetonov, če se ne potem to ni legalna poteza
         if len(menjaj) == 0:
@@ -79,7 +79,7 @@ def mprint (m):
 
 
 a = Deska()
-print(a.legalno(0,(2,3)))
+print(a.legalno(0,(5,6)))
 a.postavi(0,(2,3))
 a.izrisi()
 #testing

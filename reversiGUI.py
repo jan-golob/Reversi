@@ -125,6 +125,7 @@ class Clovek():
             
 if __name__ == "__main__":
     root = tk.Tk()
+    root.title("Reversi")
     player1 = tk.PhotoImage(file = "white.gif")
     player2 = tk.PhotoImage(file = "blue.gif")
     board = Gui(root)
