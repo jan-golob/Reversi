@@ -73,6 +73,32 @@ class Deska:
         for i in self.ploskev:
             print(i)
 
+    # metoda pove ali je konec igre?
+    # metoda vrne (False,None) če igre ni konec in (True, "zmagovalec) če je
+    def alije_konec(self):
+        if len(self.moznosti(0)) == 0 and len(self.moznosti(1)) == 0:
+            return (True,self.vodi())
+        else:
+            return (False,None)
+
+    # prešteje vse žetone na deski in vrne kdor jih ima več, v primeru ko je izenačeno vrne None
+    def vodi(self):
+        zetoni0 = 0
+        zetoni1 = 0
+        for x in range(8):
+            for y in range(8):
+                if self.ploskev[x][y]== self.protagonist(0):
+                    zetoni0 += 1
+                elif self.ploskev[x][y]== self.protagonist(1):
+                    zetoni1 += 1
+        if zetoni1 > zetoni0:
+            return self.protagonist(1)
+        elif zetoni1 < zetoni0:
+            return  self.protagonist(0)
+        else:
+            print("izenačeno")
+            return None
+
 
 # natisne matriko na malo bolj pregleden način
 def mprint (m):
@@ -84,6 +110,7 @@ a = Deska()
 print(a.legalno(0,(5,6)))
 a.postavi(0,(2,3))
 a.izrisi()
+print(a.vodi())
 #testing
 #
 # a = Deska("a","b")
