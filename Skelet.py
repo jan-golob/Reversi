@@ -1,12 +1,12 @@
 class Deska:
-    def __init__(self, igralec1="B", igralec2="W"):
+    def __init__(self, igralec0="B", igralec1="W"):
        osnova =[[None]*8 for _ in range(8)]
-       osnova[4][3] = igralec1
-       osnova[3][4] = igralec1
-       osnova[3][3] = igralec2
-       osnova[4][4] = igralec2
+       osnova[4][3] = igralec0
+       osnova[3][4] = igralec0
+       osnova[3][3] = igralec1
+       osnova[4][4] = igralec1
        self.ploskev = osnova
-       self.vlogi = (igralec1,igralec2)
+       self.vlogi = (igralec0,igralec1)
 
     # metodi antagonist in protagonist sta trenutno vpleminintirani če bi hotel kdaj zamenjati oznaki (M) in (B) za kaj drugega, kot sem storil
     # vrne nasprotnika, kjer je 0 prvi igralec(B) in 1 drugi igralec(M)
@@ -65,7 +65,10 @@ class Deska:
             for y in range(8):
                 if self.legalno(igralec,(x,y))[0]:
                     izbor_potez.append((x,y))
-        return izbor_potez
+        if len(izbor_potez) == 0:
+            return None
+        else:
+            return izbor_potez
 
     # podobno kot mprint, le da ne izriše roba (ničel, ki jih imam zato da me program ne utopi z error)
     # zdaj sem to zbrisal ker v tem primeru avsca GUI zalije z erori
@@ -76,12 +79,12 @@ class Deska:
     # metoda pove ali je konec igre?
     # metoda vrne (False,None) če igre ni konec in (True, "zmagovalec) če je
     def alije_konec(self):
-        if len(self.moznosti(0)) == 0 and len(self.moznosti(1)) == 0:
+        if self.moznosti(0) == None and self.moznosti(1) == None:
             return (True,self.vodi())
         else:
             return (False,None)
 
-    # prešteje vse žetone na deski in vrne kdor jih ima več, v primeru ko je izenačeno vrne None
+    # prešteje vse žetone na deski vrne v obliki  (število modrih, število belih)
     def vodi(self):
         zetoni0 = 0
         zetoni1 = 0
@@ -91,14 +94,7 @@ class Deska:
                     zetoni0 += 1
                 elif self.ploskev[x][y]== self.protagonist(1):
                     zetoni1 += 1
-        if zetoni1 > zetoni0:
-            return self.protagonist(1)
-        elif zetoni1 < zetoni0:
-            return  self.protagonist(0)
-        else:
-            print("izenačeno")
-            return None
-
+        return zetoni0, zetoni1
 
 # natisne matriko na malo bolj pregleden način
 def mprint (m):
