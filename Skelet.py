@@ -23,7 +23,7 @@ class Deska:
     # pogleda če je možno na mesto postaviti figuro, če je vrne poleg True tudi seznam figur ki se zamenjajo, če nanje postavimo figuro.
     def legalno (self, igralec, polozaj):
         (x,y) = polozaj
-        if self.ploskev[x][y] != None:
+        if self.ploskev[x][y] is not None:
             # print ("napaka!!!")
             return (False,None)
         menjaj = []
@@ -96,46 +96,132 @@ class Deska:
                     zetoni1 += 1
         return zetoni0, zetoni1
 
+    #naredi kopijo, uporabno pri umetni intiligenci
+    def copy(self):
+        (n_igralec0,n_igralec1) = self.vlogi
+        nova= Deska(n_igralec0,n_igralec1)
+        for x in range(8):
+            for y in range(8):
+                nova.ploskev[x][y]= self.ploskev[x][y]
+        return nova
+
 # natisne matriko na malo bolj pregleden način
 def mprint (m):
     for i in m:
         print (i)
 
-
-a = Deska()
-print(a.legalno(0,(5,6)))
-a.postavi(0,(2,3))
-a.izrisi()
-print(a.vodi())
-#testing
-#
-# a = Deska("a","b")
-#
-# print([a.protagonist(0)])
-#
-# dr = a.antagonist(0)
-# pr = a.protagonist(0)
-#
-# a.ploskev[1][1]='?'
-#
-# a.ploskev[3][3] = pr
-# a.ploskev[3][4] = dr
-# a.ploskev[3][6] = dr
-#
-# a.ploskev[4][4] = dr
-# a.ploskev[4][5] = dr
-# a.ploskev[4][6] = dr
-#
-# a.ploskev[5][4] = dr
-# a.ploskev[5][5] = pr
-# a.ploskev[5][6] = dr
-#
-# a.ploskev[6][3] = pr
-# a.ploskev[6][4] = dr
-# a.ploskev[6][6] = dr
-#
+# #TESTIRANJE
+# b = Deska()
+# a = b.copy()
+# print(a.legalno(0,(5,6)))
+# a.postavi(0,(2,3))
 # a.izrisi()
-# x=5
-# y=3
-# print((a.ploskev[y][x]))
-# print(a.legalno(0,(y,x)))
+# print(a.vodi())
+# print("")
+# b.izrisi()
+
+
+class MinMax:
+    def __init__(self, globina):
+        def __init__(self, globina):
+            self.globina = globina  # do katere globine iščemo?
+            self.prekinitev = False # ali moramo končati?
+            self.pozicija = None # objekt, ki opisuje igro (ga dobimo kasneje)
+            self.jaz = None  # katerega igralca igramo (podatek dobimo kasneje)
+            self.poteza = None # sem napišemo potezo, ko jo najdemo
+
+    # samoumevno
+    def prekini(self):
+        """Metoda, ki jo pokliče GUI, če je treba nehati razmišljati, ker
+           je uporabnik zaprl okno ali izbral novo igro."""
+        self.prekinitev = True
+
+    # izračuna vrednost pozicije, zankrat le izpiše koliko so vredna posamezna polja
+    def hevristika(self,pozicija,igralec):
+        vrednosti = {
+            #koti
+            (0,0) : 100,
+            (0,7) : 100,
+            (7,0) : 100,
+            (7,7) : 100,
+            #ob robovih zraven kota
+            (0,1) : -20,
+            (0,6) : -20,
+            (1,0) : -20,
+            (1,7) : -20,
+            (6,0) : -20,
+            (6,7) : -20,
+            (7,1) : -20,
+            (7,6) : -20,
+            #diagonalno na kot = DeadZONE
+            (1,1) : -50,
+            (1,6) : -50,
+            (6,1) : -50,
+            (6,6) : -50,
+            #na robu ob deadzone
+            (0,2) : 10,
+            (0,5) : 10,
+            (2,0) : 10,
+            (2,7) : 10,
+            (5,0) : 10,
+            (5,7) : 10,
+            (7,2) : 10,
+            (7,5) : 10,
+            #na sredini roba
+            (0,3) : 5,
+            (0,4) : 5,
+            (3,0) : 5,
+            (4,0) : 5,
+            (3,7) : 5,
+            (4,7) : 5,
+            (7,3) : 5,
+            (7,4) : 5,
+            #ob robu
+            (1,2) : -2,
+            (1,3) : -2,
+            (1,4) : -2,
+            (1,5) : -2,
+            #
+            (2,1) : -2,
+            (3,1) : -2,
+            (4,1) : -2,
+            (5,1) : -2,
+            #
+            (2,6) : -2,
+            (3,6) : -2,
+            (4,6) : -2,
+            (5,6) : -2,
+            #
+            (6,2) : -2,
+            (6,3) : -2,
+            (6,4) : -2,
+            (6,5) : -2,
+            #sredina
+            (2,2) : -1,
+            (2,3) : -1,
+            (2,4) : -1,
+            (2,5) : -1,
+
+            (3,2) : -1,
+            (3,3) : -1,
+            (3,4) : -1,
+            (3,5) : -1,
+
+            (4,2) : -1,
+            (4,3) : -1,
+            (4,4) : -1,
+            (4,5) : -1,
+
+            (5,2) : -1,
+            (5,3) : -1,
+            (5,4) : -1,
+            (5,5) : -1,
+        }
+        test = Deska()
+        for x in range(8):
+            for y in range(8):
+                test.ploskev[x][y] = vrednosti[(x,y)]
+        test.izrisi()
+
+tata = MinMax(4)
+tata.hevristika((2),1)
