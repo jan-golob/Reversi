@@ -64,11 +64,11 @@ class Gui():
     def povleci_potezo(self, x, y):
         if self.pl.alije_konec():
             if self.igralec:
-                if self.pl.moznosti(0) != []:
-                    (a,b) = self.pl.vodi()
+                if self.pl.moznosti(0) != None:
                     if self.pl.legalno(0,(x,y))[0]:
                         self.pl.postavi(0,(x,y))
                         self.addpiece(player2,x,y)
+                        (a,b) = self.pl.vodi()
                         self.igralec = not self.igralec
                         if self.pl.alije_konec()[0]:
                             self.konec()
@@ -81,17 +81,17 @@ class Gui():
                         self.igralec_1.igraj()
                         self.napis.set("neveljavna poteza modri")
                 else:
-                    print("ni potez")
+                    (a,b) = self.pl.vodi()
                     self.igralec = not self.igralec
                     napis = "beli igralec na potezi M: " + str(a) + " B: " +str(b)
                     self.napis.set(napis)
                     self.igralec_2.igraj()
             else:
-                if self.pl.moznosti(1) != []:
-                    (a,b) = self.pl.vodi()
+                if self.pl.moznosti(1) != None:
                     if self.pl.legalno(1,(x,y))[0]:
                         self.pl.postavi(1,(x,y))
                         self.addpiece(player1,x,y)
+                        (a,b) = self.pl.vodi()
                         self.igralec = not self.igralec
                         if self.pl.alije_konec()[0]:
                             self.konec()
@@ -104,7 +104,7 @@ class Gui():
                         self.igralec_1.igraj()
                         self.napis.set("neveljavna poteza beli")
                 else:
-                    print("ni potez")
+                    (a,b) = self.pl.vodi()
                     self.igralec = not self.igralec
                     napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
                     self.napis.set(napis)
