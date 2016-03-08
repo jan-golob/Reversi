@@ -62,28 +62,65 @@ class Gui():
         self.igralec_1.igraj()
         
     def povleci_potezo(self, x, y):
-        if self.igralec:
-            if self.pl.legalno(0,(x,y))[0]:
-                self.pl.postavi(0,(x,y))
-                self.addpiece(player2,x,y)
-                self.igralec = not self.igralec
-                self.refresh()
-                self.napis.set("beli igralec na potezi")
-                self.igralec_2.igraj()
+        if self.pl.alije_konec():
+            if self.igralec:
+                if self.pl.moznosti(0) != []:
+                    (a,b) = self.pl.vodi()
+                    if self.pl.legalno(0,(x,y))[0]:
+                        self.pl.postavi(0,(x,y))
+                        self.addpiece(player2,x,y)
+                        self.igralec = not self.igralec
+                        if self.pl.alije_konec()[0]:
+                            self.konec()
+                        else:
+                            self.refresh()
+                            napis = "beli igralec na potezi M: " + str(a) + " B: " +str(b)
+                            self.napis.set(napis)
+                            self.igralec_2.igraj()
+                    else:
+                        self.igralec_1.igraj()
+                        self.napis.set("neveljavna poteza modri")
+                else:
+                    print("ni potez")
+                    self.igralec = not self.igralec
+                    napis = "beli igralec na potezi M: " + str(a) + " B: " +str(b)
+                    self.napis.set(napis)
+                    self.igralec_2.igraj()
             else:
-                self.igralec_1.igraj()
-                self.napis.set("neveljavna poteza modri")
+                if self.pl.moznosti(1) != []:
+                    (a,b) = self.pl.vodi()
+                    if self.pl.legalno(1,(x,y))[0]:
+                        self.pl.postavi(1,(x,y))
+                        self.addpiece(player1,x,y)
+                        self.igralec = not self.igralec
+                        if self.pl.alije_konec()[0]:
+                            self.konec()
+                        else:
+                            self.refresh()
+                            napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
+                            self.napis.set(napis)
+                            self.igralec_2.igraj()
+                    else:
+                        self.igralec_1.igraj()
+                        self.napis.set("neveljavna poteza beli")
+                else:
+                    print("ni potez")
+                    self.igralec = not self.igralec
+                    napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
+                    self.napis.set(napis)
+                    self.igralec_2.igraj()
         else:
-            if self.pl.legalno(1,(x,y))[0]:
-                self.pl.postavi(1,(x,y))
-                self.addpiece(player1,x,y)
-                self.igralec = not self.igralec
-                self.napis.set("modri igralec na potezi")
-                self.refresh()
-                self.igralec_2.igraj()
-            else:
-                self.igralec_1.igraj()
-                self.napis.set("neveljavna poteza beli")
+            self.konec()
+
+    def konec(self):
+        print("konec")
+        (a,b) = self.pl.vodi()
+        if a > b:
+            napis = "Konec igre zmagovalec je modri z " + str(a) + " žetoni"
+            self.napis.set(napis)
+        else:
+            napis = "Konec igre zmagovalec je beli z " + str(b) + " žetoni"
+            self.napis.set(napis)
 
     def addpiece(self, image, row, column):
         '''Doda figuro na igralno ploščo v kvadratek (row,column)'''
