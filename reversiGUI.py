@@ -29,7 +29,7 @@ class Gui():
         file_menu.add_cascade(label="nacin igranja", menu=recent_menu)
         # Dodamo izbire v file_menu
         file_menu.add_separator() # To doda separator v menu
-        file_menu.add_command(label="Izhod", command=master.destroy)
+        #file_menu.add_command(label="Izhod", command=self.zapri_okno(master))
         recent_menu.add_command(label="igralec vs igralec", command=self.nastavitev_igralcev)
 
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
@@ -51,16 +51,37 @@ class Gui():
 
     def nastavitev_igralcev(self):
         self.igralec_1 = Clovek(self)
-        self.igralec_2 = Clovek(self)
+        self.igralec_2 = Racunalnik(self, sk.MinMax(3))
+        self.igralec = True
+        print(self.igralec)
         self.zacni_igro()
 
     def zacni_igro(self):
-        self.igralec = True
+        self.prekini_igralce()
         self.pl = sk.Deska()
         self.pl.izrisi()
         self.refresh()
         self.napis.set("modri igralec na potezi")
         self.igralec_1.igraj()
+
+    def prekini_igralce(self):
+        """Sporoči igralcem, da morajo nehati razmišljati."""
+        logging.debug ("prekinjam igralce")
+        print(self.igralec)
+        if self.igralec:
+            print(self.igralec_1)
+            self.igralec_1.prekini()
+        if not self.igralec:
+            self.igralec_2.prekini()
+
+    def zapri_okno(self, master):
+        """Ta metoda se pokliče, ko uporabnik zapre aplikacijo."""
+        # Vlaknom, ki tečejo vzporedno, je treba sporočiti, da morajo
+        # končati, sicer se bo okno zaprlo, aplikacija pa bo še vedno
+        # delovala.
+        self.prekini_igralce()
+        # Dejansko zapremo okno.
+        master.destroy()
         
     def povleci_potezo(self, x, y):
         if self.pl.alije_konec():
@@ -150,6 +171,11 @@ class Clovek():
     def __init__(self, gui):
         self.gui = gui
 
+    def prekini(self):
+        # To metodo kliče GUI, če je treba prekiniti razmišljanje.
+        # Človek jo lahko ignorira.
+        pass
+
     def igraj(self):
         self.gui.canvas.bind('<Button-1>', self.klik)
 
@@ -182,29 +208,29 @@ class Racunalnik():
 
         # Naredimo vlakno, ki mu podamo *kopijo* igre (da ne bo zmedel GUIja):
         self.mislec = threading.Thread(
-            target=lambda: self.algoritem.izracunaj_potezo(self.gui.igra.kopija()))
+            target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),1))
 
         # Poženemo vlakno:
         self.mislec.start()
 
         # Gremo preverjat, ali je bila najdena poteza:
-        self.gui.plosca.after(100, self.preveri_potezo)
+        self.gui.canvas.after(100, self.preveri_potezo)
 
     def preveri_potezo(self):
         """Vsakih 100ms preveri, ali je algoritem že izračunal potezo."""
         if self.algoritem.poteza is not None:
             # Algoritem je našel potezo, povleci jo, če ni bilo prekinitve
-            self.gui.povleci_potezo(self.algoritem.poteza)
+            self.gui.povleci_potezo(self.algoritem.poteza[0],self.algoritem.poteza[1])
             # Vzporedno vlakno ni več aktivno, zato ga "pozabimo"
             self.mislec = None
         else:
             # Algoritem še ni našel poteze, preveri še enkrat čez 100ms
-            self.gui.plosca.after(100, self.preveri_potezo)
+            self.gui.canvas.after(100, self.preveri_potezo)
 
     def prekini(self):
         # To metodo kliče GUI, če je treba prekiniti razmišljanje.
         if self.mislec:
-            #logging.debug ("Prekinjamo {0}".format(self.mislec))
+            logging.debug ("Prekinjamo {0}".format(self.mislec))
             # Algoritmu sporočimo, da mora nehati z razmišljanjem
             self.algoritem.prekini()
             # Počakamo, da se vlakno ustavi
