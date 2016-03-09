@@ -1,5 +1,5 @@
 import logging
-import threading
+#import threading
 
 class Deska:
     def __init__(self, igralec0="B", igralec1="W"):
