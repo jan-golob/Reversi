@@ -150,7 +150,7 @@ class MinMax:
 
     # Zažene minmax iz njim upravlja
     def optimalna_poteza(self, pozicija, igralec):
-        self.pozicija = pozicija
+        self.pozicija = pozicija.copy()
         self.prekinitev = False # Glavno vlakno bo to nastvilo na True, če moramo nehati
         self.jaz = igralec
         self.poteza = None # Sem napišemo potezo, ko jo najdemo
@@ -228,7 +228,6 @@ class MinMax:
         return ocena
         
 
+test = Deska()
 
 tata = MinMax(2)
-print(tata.optimalna_poteza(Deska(),0))
-print(tata.poteza)
