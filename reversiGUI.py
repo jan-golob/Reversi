@@ -29,7 +29,7 @@ class Gui():
         file_menu.add_cascade(label="nacin igranja", menu=recent_menu)
         # Dodamo izbire v file_menu
         file_menu.add_separator() # To doda separator v menu
-        #file_menu.add_command(label="Izhod", command=self.zapri_okno(master))
+        file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
         recent_menu.add_command(label="igralec vs igralec", command=self.nastavitev_igralcev)
 
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
@@ -53,7 +53,6 @@ class Gui():
         self.igralec_1 = Clovek(self)
         self.igralec_2 = Racunalnik(self, sk.MinMax(3))
         self.igralec = True
-        print(self.igralec)
         self.zacni_igro()
 
     def zacni_igro(self):
@@ -66,10 +65,7 @@ class Gui():
 
     def prekini_igralce(self):
         """Sporoči igralcem, da morajo nehati razmišljati."""
-        logging.debug ("prekinjam igralce")
-        print(self.igralec)
         if self.igralec:
-            print(self.igralec_1)
             self.igralec_1.prekini()
         if not self.igralec:
             self.igralec_2.prekini()
@@ -121,7 +117,7 @@ class Gui():
                             self.refresh()
                             napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
                             self.napis.set(napis)
-                            self.igralec_2.igraj()
+                            self.igralec_1.igraj()
                     else:
                         self.igralec_1.igraj()
                         self.napis.set("neveljavna poteza beli")
@@ -205,7 +201,6 @@ class Racunalnik():
         #   je že bila najdena poteza (metoda preveri_potezo spodaj).
         # Ta rešitev je precej amaterska. Z resno knjižnico za GUI bi zadeve lahko
         # naredili bolje (vlakno bi samo sporočilo GUI-ju, da je treba narediti potezo).
-
         # Naredimo vlakno, ki mu podamo *kopijo* igre (da ne bo zmedel GUIja):
         self.mislec = threading.Thread(
             target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),1))

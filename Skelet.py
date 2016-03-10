@@ -59,7 +59,7 @@ class Deska:
             for (m,n) in [poz]+polja:
                 self.ploskev[m][n] = self.protagonist(igralec)
         else:
-            print("Ilegalna poteza")
+            pass
 
     # vrne vse možne poteze za danega igralca
     def moznosti(self,igralec):
