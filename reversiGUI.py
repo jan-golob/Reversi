@@ -3,6 +3,9 @@ import Skelet as sk
 import threading # za vzporedno izvajanje
 import logging # za odpravljanje napak
 
+#GLOBINA MINMAXA
+GLO= 3
+
 class Gui():
     def __init__(self, master, rows=8, columns=8, size=64, color1="black", color2="red"):
         '''nastavimo velikost zaslona in barve kvadratov'''
@@ -30,7 +33,9 @@ class Gui():
         # Dodamo izbire v file_menu
         file_menu.add_separator() # To doda separator v menu
         file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
-        recent_menu.add_command(label="igralec vs igralec", command=self.nastavitev_igralcev)
+        recent_menu.add_command(label="igralec vs igralec",command=lambda: self.nastavitev_igralcev(Clovek(self),Clovek(self)))
+        recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.MinMax(GLO))))
+        recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.MinMax(GLO)),Racunalnik(self, sk.MinMax(GLO))))
 
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
@@ -47,11 +52,11 @@ class Gui():
                 color = self.color1 if color == self.color2 else self.color2
 
 
-        self.nastavitev_igralcev()
+        self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.MinMax(GLO)))
 
-    def nastavitev_igralcev(self):
-        self.igralec_1 = Clovek(self)
-        self.igralec_2 = Racunalnik(self, sk.MinMax(3))
+    def nastavitev_igralcev(self, modri, beli):
+        self.igralec_1 = modri
+        self.igralec_2 = beli
         self.igralec = True
         self.zacni_igro()
 
@@ -202,8 +207,13 @@ class Racunalnik():
         # Ta rešitev je precej amaterska. Z resno knjižnico za GUI bi zadeve lahko
         # naredili bolje (vlakno bi samo sporočilo GUI-ju, da je treba narediti potezo).
         # Naredimo vlakno, ki mu podamo *kopijo* igre (da ne bo zmedel GUIja):
-        self.mislec = threading.Thread(
-            target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),1))
+        print(self.gui.igralec)
+        if self.gui.igralec:
+            self.mislec = threading.Thread(
+                target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),0))
+        if not self.gui.igralec:
+            self.mislec = threading.Thread(
+                target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),1))
 
         # Poženemo vlakno:
         self.mislec.start()
