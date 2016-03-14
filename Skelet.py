@@ -181,7 +181,8 @@ class MinMax:
             elif self.jaz == 1 and i0 > i1:
                 return (None, -MinMax.ZMAGA)
             else:
-                assert False, "neki je narobe a je mogoče neodločeno ali pa jst ne znam programirat"
+                return (None, 0)
+                #assert False, "neki je narobe a je mogoče neodločeno ali pa jst ne znam programirat"
         else:
             if globina == 0:
                 return (None, self.hevristika(self.jaz))
@@ -190,34 +191,43 @@ class MinMax:
                 kopija = self.pozicija.copy()
                 if maximiziramo:
                     # Maksimiziramo
-                    najboljsa_poteza = None
-                    vrednost_najboljse = -MinMax.INFI
-                    for p in self.pozicija.moznosti(self.jaz):
-                        self.pozicija.postavi(self.jaz, p)
-                        vrednost = self.minimax(globina-1, not maximiziramo)[1]
-                        self.pozicija = kopija
-                        if vrednost > vrednost_najboljse:
-                            vrednost_najboljse = vrednost
-                            najboljsa_poteza = p
+                    moznosti = self.pozicija.moznosti(self.jaz)
+                    #preverimo če imamo sploh potezo
+                    if moznosti == None:
+                        return self.minimax(globina-1, not maximiziramo)
+                    else:
+                        najboljsa_poteza = None
+                        vrednost_najboljse = -MinMax.INFI
+                        for p in moznosti:
+                            self.pozicija.postavi(self.jaz, p)
+                            vrednost = self.minimax(globina-1, not maximiziramo)[1]
+                            self.pozicija = kopija
+                            if vrednost > vrednost_najboljse:
+                                vrednost_najboljse = vrednost
+                                najboljsa_poteza = p
                 else:
                     # Minimiziramo
-                    najboljsa_poteza = None
-                    vrednost_najboljse = MinMax.INFI
-                    for p in self.pozicija.moznosti(nasprotnik(self.jaz)):
-                        self.pozicija.postavi(nasprotnik(self.jaz), p)
-                        vrednost = self.minimax(globina-1, not maximiziramo)[1]
-                        self.pozicija = kopija
-                        if vrednost < vrednost_najboljse:
-                            vrednost_najboljse = vrednost
-                            najboljsa_poteza = p
+                    moznosti = self.pozicija.moznosti(nasprotnik(self.jaz))
+                    #preverimo če imamo sploh potezo
+                    if moznosti == None:
+                        return self.minimax(globina-1, not maximiziramo)
+                    else:
+                        najboljsa_poteza = None
+                        vrednost_najboljse = MinMax.INFI
+                        for p in moznosti:
+                            self.pozicija.postavi(nasprotnik(self.jaz), p)
+                            vrednost = self.minimax(globina-1, not maximiziramo)[1]
+                            self.pozicija = kopija
+                            if vrednost < vrednost_najboljse:
+                                vrednost_najboljse = vrednost
+                                najboljsa_poteza = p
                 assert (najboljsa_poteza is not None), "minimax: izračunana poteza je None"
                 return (najboljsa_poteza, vrednost_najboljse)
-                
         
     # izračuna vrednost pozicije, zankrat le izpiše koliko so vredna posamezna polja
     def hevristika(self,igralec):
-        vrednosti= [[100, -20, 10, 5, 5, 10, -20, 100], [-20, -50, -2, -2, -2, -2, -50, -20],[10, -2, -1, -1, -1, -1, -2, 10], [5, -2, -1, -1, -1, -1, -2, 5],
-            [5, -2, -1, -1, -1, -1, -2, 5], [10, -2, -1, -1, -1, -1, -2, 10], [-20, -50, -2, -2, -2, -2, -50, -20], [100, -20, 10, 5, 5, 10, -20, 100]]
+        vrednosti= [[200, -20, 10, 5, 5, 10, -20, 200], [-20, -50, -2, -2, -2, -2, -50, -20],[10, -2, -1, -1, -1, -1, -2, 10], [5, -2, -1, -1, -1, -1, -2, 5],
+            [5, -2, -1, -1, -1, -1, -2, 5], [10, -2, -1, -1, -1, -1, -2, 10], [-20, -50, -2, -2, -2, -2, -50, -20], [200, -20, 10, 5, 5, 10, -20, 200]]
         ocena = 0
         for x in range(8):
             for y in range(8):
