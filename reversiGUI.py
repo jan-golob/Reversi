@@ -84,67 +84,75 @@ class Gui():
         self.prekini_igralce()
         # Dejansko zapremo okno.
         master.destroy()
-        
-    def povleci_potezo(self, x, y):
-        if self.pl.alije_konec():
-            if self.igralec:
-                if self.pl.moznosti(0) != None:
-                    if self.pl.legalno(0,(x,y))[0]:
-                        self.pl.postavi(0,(x,y))
-                        self.addpiece(player2,x,y)
-                        (a,b) = self.pl.vodi()
-                        self.igralec = not self.igralec
-                        if self.pl.alije_konec()[0]:
-                            self.konec()
-                        else:
-                            self.refresh()
-                            napis = "beli igralec na potezi M: " + str(a) + " B: " +str(b)
-                            self.napis.set(napis)
-                            self.igralec_2.igraj()
-                    else:
-                        self.igralec_1.igraj()
-                        self.napis.set("neveljavna poteza modri")
-                else:
-                    (a,b) = self.pl.vodi()
-                    self.igralec = not self.igralec
-                    napis = "beli igralec na potezi M: " + str(a) + " B: " +str(b)
-                    self.napis.set(napis)
-                    self.igralec_2.igraj()
+
+    def zamenjaj_napis(self,igralec):
+        (a,b) = self.pl.vodi()
+        if self.pl.alije_konec()[0]:
+            if a > b:
+                napis = "Konec igre zmagovalec je modri z " + str(a) + " žetoni proti " + str(b) + " žetonom belega" 
+                self.napis.set(napis)
             else:
-                if self.pl.moznosti(1) != None:
-                    if self.pl.legalno(1,(x,y))[0]:
-                        self.pl.postavi(1,(x,y))
-                        self.addpiece(player1,x,y)
-                        (a,b) = self.pl.vodi()
-                        self.igralec = not self.igralec
-                        if self.pl.alije_konec()[0]:
-                            self.konec()
-                        else:
-                            self.refresh()
-                            napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
-                            self.napis.set(napis)
-                            self.igralec_1.igraj()
-                    else:
-                        self.igralec_1.igraj()
-                        self.napis.set("neveljavna poteza beli")
+                napis = "Konec igre zmagovalec je beli z " + str(b) + " žetoni proti " + str(a) + " žetonom modrega" 
+                self.napis.set(napis)
+        else:
+            if not igralec:
+                napis = "beli igralec na potezi M: " + str(a) + " B: " +str(b)
+                self.napis.set(napis)
+            else:
+                napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
+                self.napis.set(napis)
+
+    def naredi_potezo(self,x,y,igralec):
+        """odigra potezo"""
+
+        #v tem delu samo določimo spremenjljivke ki jih v nadaljevanju funkcije uporabljamo
+        if igralec == 0:
+            jaz = self.igralec_1
+            neveljaven_napis = "neveljavna poteza modri"
+            nasprotnik = self.igralec_2
+        if igralec == 1:
+            nasprotnik = self.igralec_1
+            jaz = self.igralec_2
+            neveljaven_napis = "neveljavna poteza beli"
+
+        #tu se odigra poteza
+        if self.pl.moznosti(igralec) != None:
+            if self.pl.legalno(igralec,(x,y))[0]:
+                self.pl.postavi(igralec,(x,y))
+                self.addpiece(player2,x,y)
+                self.refresh()
+                self.igralec = not self.igralec
+                if self.pl.alije_konec()[0]:
+                    self.konec()
                 else:
-                    (a,b) = self.pl.vodi()
-                    self.igralec = not self.igralec
-                    napis = "modri igralec na potezi M: " + str(a) + " B: " +str(b)
-                    self.napis.set(napis)
-                    self.igralec_2.igraj()
+                    self.refresh()
+                    self.zamenjaj_napis(self.igralec)
+                    nasprotnik.igraj()
+            else:
+                jaz.igraj()
+                self.napis.set(neveljaven_napis)
+        else:
+            self.igralec = not self.igralec
+            self.zamenjaj_napis(self.igralec)
+            nasprotnik.igraj()
+        
+             
+    def povleci_potezo(self, x, y):
+        """kliče funkcijo naredi potezo za primernega igralca
+            ali pa zaključi igro"""
+        if not self.pl.alije_konec()[0]:
+            if self.igralec:
+                self.naredi_potezo(x,y,0)
+
+            else:
+                self.naredi_potezo(x,y,1)
+
         else:
             self.konec()
 
     def konec(self):
-        print("konec")
-        (a,b) = self.pl.vodi()
-        if a > b:
-            napis = "Konec igre zmagovalec je modri z " + str(a) + " žetoni"
-            self.napis.set(napis)
-        else:
-            napis = "Konec igre zmagovalec je beli z " + str(b) + " žetoni"
-            self.napis.set(napis)
+        self.zamenjaj_napis(self.igralec)
+
 
     def addpiece(self, image, row, column):
         '''Doda figuro na igralno ploščo v kvadratek (row,column)'''
