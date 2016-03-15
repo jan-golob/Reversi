@@ -36,7 +36,8 @@ class Gui():
         recent_menu.add_command(label="igralec vs igralec",command=lambda: self.nastavitev_igralcev(Clovek(self),Clovek(self)))
         recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.MinMax(GLO))))
         recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.MinMax(GLO)),Racunalnik(self, sk.MinMax(GLO))))
-
+        recent_menu.add_command(label="racunalnik vs clovek",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.MinMax(GLO)),Clovek(self)))
+        
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
 

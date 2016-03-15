@@ -160,6 +160,7 @@ class MinMax:
         self.pozicija = None
         if not self.prekinitev:
             # Potezo izvedemo v primeru, da nismo bili prekinjeni
+            print("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
             logging.debug("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
             self.poteza = poteza
     #
@@ -226,8 +227,8 @@ class MinMax:
         
     # izračuna vrednost pozicije, zankrat le izpiše koliko so vredna posamezna polja
     def hevristika(self,igralec):
-        vrednosti= [[200, -20, 10, 5, 5, 10, -20, 200], [-20, -50, -2, -2, -2, -2, -50, -20],[10, -2, -1, -1, -1, -1, -2, 10], [5, -2, -1, -1, -1, -1, -2, 5],
-            [5, -2, -1, -1, -1, -1, -2, 5], [10, -2, -1, -1, -1, -1, -2, 10], [-20, -50, -2, -2, -2, -2, -50, -20], [200, -20, 10, 5, 5, 10, -20, 200]]
+        vrednosti= [[2000, -20, 10, -10, -5, -10, -20, 2000], [-20, -50, -2, -2, -2, -2, -50, -20],[10, -2, -1, -1, -1, -1, -2, 10], [5, -2, -1, -1, -1, -1, -2, 5],
+            [5, -2, -1, -1, -1, -1, -2, 5], [10, -2, -1, -1, -1, -1, -2, 10], [-20, -50, -2, -2, -2, -2, -50, -20], [2000, -20, -10, -5, -5, -10, -20, 2000]]
         ocena = 0
         for x in range(8):
             for y in range(8):
