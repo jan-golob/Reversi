@@ -175,6 +175,21 @@ class Gui():
                         self.addpiece(player1, i, j)
                     else:
                         self.addpiece(player2, i, j)
+        self.potencialne()
+
+    def potencialne(self):
+        if self.igralec:
+            igr = 0
+        else:
+            igr = 1
+        potencialne = self.pl.moznosti(igr)
+        print(potencialne)
+        for (x,y) in potencialne:
+            x0 = (x * self.size) + int(self.size*(7/16))
+            x1 = (x * self.size) + int(self.size*(9/16))
+            y0 = (y * self.size) + int(self.size*(7/16))
+            y1 = (y * self.size) + int(self.size*(9/16))
+            self.canvas.create_oval(x1,y1,x0,y0, fill="green", tags="figura")
 
 
 class Clovek():

@@ -26,6 +26,7 @@ class Deska:
     # pogleda če je možno na mesto postaviti figuro, če je vrne poleg True tudi seznam figur ki se zamenjajo, če nanje postavimo figuro.
     def legalno (self, igralec, polozaj):
         (x,y) = polozaj
+        print(x,y)
         if self.ploskev[x][y] is not None:
             # print ("napaka!!!")
             return (False,None)
@@ -66,6 +67,8 @@ class Deska:
         izbor_potez = []
         for x in range(8):
             for y in range(8):
+                print(x,y)
+                print(self.legalno(igralec,(x,y))[0])
                 if self.legalno(igralec,(x,y))[0]:
                     izbor_potez.append((x,y))
         if len(izbor_potez) == 0:
@@ -133,7 +136,7 @@ def nasprotnik(i):
 
 
 class MinMax:
-    ZMAGA = 10000
+    ZMAGA = 1000000
     INFI = ZMAGA + 109
     def __init__(self, globina):
         self.globina = globina  # do katere globine iščemo?
@@ -195,7 +198,7 @@ class MinMax:
                     moznosti = self.pozicija.moznosti(self.jaz)
                     #preverimo če imamo sploh potezo
                     if moznosti == None:
-                        return self.minimax(globina-1, not maximiziramo)
+                        return self.minimax(globina, not maximiziramo)
                     else:
                         najboljsa_poteza = None
                         vrednost_najboljse = -MinMax.INFI
@@ -211,7 +214,7 @@ class MinMax:
                     moznosti = self.pozicija.moznosti(nasprotnik(self.jaz))
                     #preverimo če imamo sploh potezo
                     if moznosti == None:
-                        return self.minimax(globina-1, not maximiziramo)
+                        return self.minimax(globina, not maximiziramo)
                     else:
                         najboljsa_poteza = None
                         vrednost_najboljse = MinMax.INFI
@@ -227,8 +230,8 @@ class MinMax:
         
     # izračuna vrednost pozicije, zankrat le izpiše koliko so vredna posamezna polja
     def hevristika(self,igralec):
-        vrednosti= [[2000, -20, 10, -10, -5, -10, -20, 2000], [-20, -50, -2, -2, -2, -2, -50, -20],[10, -2, -1, -1, -1, -1, -2, 10], [5, -2, -1, -1, -1, -1, -2, 5],
-            [5, -2, -1, -1, -1, -1, -2, 5], [10, -2, -1, -1, -1, -1, -2, 10], [-20, -50, -2, -2, -2, -2, -50, -20], [2000, -20, -10, -5, -5, -10, -20, 2000]]
+        vrednosti= [[4000, -20, 10, -10, -5, -10, -20, 4000], [-20, -50, -2, -2, -2, -2, -50, -20],[10, -2, -1, -1, -1, -1, -2, 10], [5, -2, -1, -1, -1, -1, -2, 5],
+            [5, -2, -1, -1, -1, -1, -2, 5], [10, -2, -1, -1, -1, -1, -2, 10], [-20, -50, -2, -2, -2, -2, -50, -20], [4000, -20, -10, -5, -5, -10, -20, 4000]]
         ocena = 0
         for x in range(8):
             for y in range(8):
