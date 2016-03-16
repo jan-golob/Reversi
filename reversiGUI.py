@@ -28,10 +28,14 @@ class Gui():
         # Naredimo podmenu "File"
         file_menu = tk.Menu(menu)
         recent_menu = tk.Menu(menu)
+        debug_menu = tk.Menu(menu)
         menu.add_cascade(label="Nastavitve", menu=file_menu)
         file_menu.add_cascade(label="nacin igranja", menu=recent_menu)
+        file_menu.add_cascade(label="Debug", menu=debug_menu)
         # Dodamo izbire v file_menu
         file_menu.add_separator() # To doda separator v menu
+        debug_menu.add_command(label="možnosti modri",command=lambda: print(self.pl.moznosti(0)) )
+        debug_menu.add_command(label="možnosti beli",command=lambda: print(self.pl.moznosti(1)) )
         file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
         recent_menu.add_command(label="igralec vs igralec",command=lambda: self.nastavitev_igralcev(Clovek(self),Clovek(self)))
         recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.MinMax(GLO))))
@@ -182,14 +186,15 @@ class Gui():
             igr = 0
         else:
             igr = 1
-        potencialne = self.pl.moznosti(igr)
-        print(potencialne)
-        for (x,y) in potencialne:
-            x0 = (x * self.size) + int(self.size*(7/16))
-            x1 = (x * self.size) + int(self.size*(9/16))
-            y0 = (y * self.size) + int(self.size*(7/16))
-            y1 = (y * self.size) + int(self.size*(9/16))
-            self.canvas.create_oval(x1,y1,x0,y0, fill="green", tags="figura")
+        potencialne_poteze = self.pl.moznosti(igr)
+        if potencialne_poteze is not None:
+            #obrnemo vrstni red zaradi problemov
+            for (y,x) in potencialne_poteze:
+                x0 = (x * self.size) + int(self.size*(7/16))
+                x1 = (x * self.size) + int(self.size*(9/16))
+                y0 = (y * self.size) + int(self.size*(7/16))
+                y1 = (y * self.size) + int(self.size*(9/16))
+                self.canvas.create_oval(x1,y1,x0,y0, fill="green", tags="figura")
 
 
 class Clovek():

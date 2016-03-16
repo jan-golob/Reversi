@@ -26,9 +26,7 @@ class Deska:
     # pogleda če je možno na mesto postaviti figuro, če je vrne poleg True tudi seznam figur ki se zamenjajo, če nanje postavimo figuro.
     def legalno (self, igralec, polozaj):
         (x,y) = polozaj
-        print(x,y)
         if self.ploskev[x][y] is not None:
-            # print ("napaka!!!")
             return (False,None)
         menjaj = []
         # pogleda po vseh osmih smereh
@@ -67,8 +65,6 @@ class Deska:
         izbor_potez = []
         for x in range(8):
             for y in range(8):
-                print(x,y)
-                print(self.legalno(igralec,(x,y))[0])
                 if self.legalno(igralec,(x,y))[0]:
                     izbor_potez.append((x,y))
         if len(izbor_potez) == 0:
