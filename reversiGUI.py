@@ -38,9 +38,9 @@ class Gui():
         debug_menu.add_command(label="možnosti beli",command=lambda: print(self.pl.moznosti(1)) )
         file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
         recent_menu.add_command(label="igralec vs igralec",command=lambda: self.nastavitev_igralcev(Clovek(self),Clovek(self)))
-        recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.MinMax(GLO))))
-        recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.MinMax(GLO)),Racunalnik(self, sk.MinMax(GLO))))
-        recent_menu.add_command(label="racunalnik vs clovek",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.MinMax(GLO)),Clovek(self)))
+        recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(GLO))))
+        recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Racunalnik(self, sk.AlphaBeta(GLO))))
+        recent_menu.add_command(label="racunalnik vs clovek",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Clovek(self)))
         
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
@@ -57,7 +57,7 @@ class Gui():
                 color = self.color1 if color == self.color2 else self.color2
 
 
-        self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.MinMax(GLO)))
+        self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(GLO)))
 
     def nastavitev_igralcev(self, modri, beli):
         self.igralec_1 = modri
@@ -236,7 +236,6 @@ class Racunalnik():
         # Ta rešitev je precej amaterska. Z resno knjižnico za GUI bi zadeve lahko
         # naredili bolje (vlakno bi samo sporočilo GUI-ju, da je treba narediti potezo).
         # Naredimo vlakno, ki mu podamo *kopijo* igre (da ne bo zmedel GUIja):
-        print(self.gui.igralec)
         if self.gui.igralec:
             self.mislec = threading.Thread(
                 target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),0))
