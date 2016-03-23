@@ -62,7 +62,7 @@ class Gui():
     def nastavitev_igralcev(self, modri, beli):
         self.igralec_1 = modri
         self.igralec_2 = beli
-        self.igralec = True
+        self.igralec_1_na_potezi = True
         self.zacni_igro()
 
     def zacni_igro(self):
@@ -75,9 +75,9 @@ class Gui():
 
     def prekini_igralce(self):
         """Sporoči igralcem, da morajo nehati razmišljati."""
-        if self.igralec:
+        if self.igralec_1_na_potezi:
             self.igralec_1.prekini()
-        if not self.igralec:
+        else:
             self.igralec_2.prekini()
 
     def zapri_okno(self, master):
@@ -125,19 +125,19 @@ class Gui():
                 self.pl.postavi(igralec,(x,y))
                 self.addpiece(player2,x,y)
                 self.refresh()
-                self.igralec = not self.igralec
+                self.igralec_1_na_potezi = not self.igralec_1_na_potezi
                 if self.pl.alije_konec()[0]:
                     self.konec()
                 else:
                     self.refresh()
-                    self.zamenjaj_napis(self.igralec)
+                    self.zamenjaj_napis(self.igralec_1_na_potezi)
                     nasprotnik.igraj()
             else:
                 jaz.igraj()
                 self.napis.set(neveljaven_napis)
         else:
-            self.igralec = not self.igralec
-            self.zamenjaj_napis(self.igralec)
+            self.igralec_1_na_potezi = not self.igralec_1_na_potezi
+            self.zamenjaj_napis(self.igralec_1_na_potezi)
             nasprotnik.igraj()
         
              
@@ -145,7 +145,7 @@ class Gui():
         """kliče funkcijo naredi potezo za primernega igralca
             ali pa zaključi igro"""
         if not self.pl.alije_konec()[0]:
-            if self.igralec:
+            if self.igralec_1_na_potezi:
                 self.naredi_potezo(x,y,0)
 
             else:
@@ -155,7 +155,7 @@ class Gui():
             self.konec()
 
     def konec(self):
-        self.zamenjaj_napis(self.igralec)
+        self.zamenjaj_napis(self.igralec_1_na_potezi)
 
 
     def addpiece(self, image, row, column):
@@ -181,7 +181,7 @@ class Gui():
                         self.addpiece(player2, i, j)
 
     def potencialne(self):
-        if self.igralec:
+        if self.igralec_1_na_potezi:
             igr = 0
         else:
             igr = 1
@@ -210,13 +210,11 @@ class Clovek():
         self.gui.canvas.bind('<Button-1>', self.klik)
 
     def klik(self, event):
-        
-        i = (event.y)//self.gui.size
-        j = (event.x)//self.gui.size
-        
-        self.gui.povleci_potezo(i, j)
-
-
+        if ((self.gui.igralec_1_na_potezi and self == self.gui.igralec_1) or
+           (not self.gui.igralec_1_na_potezi and self == self.gui.igralec_2)):
+            i = (event.y)//self.gui.size
+            j = (event.x)//self.gui.size
+            self.gui.povleci_potezo(i, j)
 
 class Racunalnik():
     def __init__(self, gui, algoritem):
@@ -236,10 +234,10 @@ class Racunalnik():
         # Ta rešitev je precej amaterska. Z resno knjižnico za GUI bi zadeve lahko
         # naredili bolje (vlakno bi samo sporočilo GUI-ju, da je treba narediti potezo).
         # Naredimo vlakno, ki mu podamo *kopijo* igre (da ne bo zmedel GUIja):
-        if self.gui.igralec:
+        if self.gui.igralec_1_na_potezi:
             self.mislec = threading.Thread(
                 target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),0))
-        if not self.gui.igralec:
+        else:
             self.mislec = threading.Thread(
                 target=lambda: self.algoritem.optimalna_poteza(self.gui.pl.copy(),1))
 
