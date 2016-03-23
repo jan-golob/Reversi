@@ -4,7 +4,7 @@ import threading # za vzporedno izvajanje
 import logging # za odpravljanje napak
 
 #GLOBINA MINMAXA
-GLO= 3
+GLO= 5
 
 class Gui():
     def __init__(self, master, rows=8, columns=8, size=64, color1="black", color2="red"):
@@ -179,7 +179,6 @@ class Gui():
                         self.addpiece(player1, i, j)
                     else:
                         self.addpiece(player2, i, j)
-        self.potencialne()
 
     def potencialne(self):
         if self.igralec:
@@ -207,6 +206,7 @@ class Clovek():
         pass
 
     def igraj(self):
+        self.gui.potencialne()
         self.gui.canvas.bind('<Button-1>', self.klik)
 
     def klik(self, event):
