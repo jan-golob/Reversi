@@ -4,7 +4,7 @@ import threading # za vzporedno izvajanje
 import logging # za odpravljanje napak
 
 #GLOBINA MINMAXA
-GLO= 5
+GLO= 4
 
 class Gui():
     def __init__(self, master, rows=8, columns=8, size=64, color1="black", color2="red"):
