@@ -264,7 +264,7 @@ class AlphaBeta:
         self.pozicija = None
         if not self.prekinitev:
             # Potezo izvedemo v primeru, da nismo bili prekinjeni
-            print("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
+            #print("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
             logging.debug("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
             self.poteza = poteza
     #

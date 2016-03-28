@@ -7,7 +7,7 @@ import logging # za odpravljanje napak
 GLO= 4
 
 class Gui():
-    def __init__(self, master, rows=8, columns=8, size=64, color1="black", color2="red"):
+    def __init__(self, master, rows=8, columns=8, size=64, color1="gray2", color2="burlywood3"):
         '''nastavimo velikost zaslona in barve kvadratov'''
 
         self.rows = rows
@@ -39,8 +39,8 @@ class Gui():
         file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
         recent_menu.add_command(label="igralec vs igralec",command=lambda: self.nastavitev_igralcev(Clovek(self),Clovek(self)))
         recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(GLO))))
+        recent_menu.add_command(label="racunalnik vs igralec",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Clovek(self)))
         recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Racunalnik(self, sk.AlphaBeta(GLO))))
-        recent_menu.add_command(label="racunalnik vs clovek",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Clovek(self)))
         
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
@@ -68,7 +68,6 @@ class Gui():
     def zacni_igro(self):
         self.prekini_igralce()
         self.pl = sk.Deska()
-        self.pl.izrisi()
         self.refresh()
         self.napis.set("modri igralec na potezi")
         self.igralec_1.igraj()
@@ -93,10 +92,10 @@ class Gui():
         (a,b) = self.pl.vodi()
         if self.pl.alije_konec()[0]:
             if a > b:
-                napis = "Konec igre zmagovalec je modri z " + str(a) + " žetoni proti " + str(b) + " žetonom belega" 
+                napis = "Konec igre zmagovalec je modri z rezultatom " + str(a) + " proti " + str(b) 
                 self.napis.set(napis)
             else:
-                napis = "Konec igre zmagovalec je beli z " + str(b) + " žetoni proti " + str(a) + " žetonom modrega" 
+                napis = "Konec igre zmagovalec je beli z rezultatom " + str(b) + " proti " + str(a)
                 self.napis.set(napis)
         else:
             if not igralec:
@@ -176,9 +175,9 @@ class Gui():
             for j in range(0,8):
                 if self.pl.ploskev[i][j] != None:
                     if self.pl.ploskev[i][j] == "W":
-                        self.addpiece(player1, i, j)
-                    else:
                         self.addpiece(player2, i, j)
+                    else:
+                        self.addpiece(player1, i, j)
 
     def potencialne(self):
         if self.igralec_1_na_potezi:
@@ -277,7 +276,7 @@ class Racunalnik():
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Reversi")
-    player1 = tk.PhotoImage(file = "white.gif")
-    player2 = tk.PhotoImage(file = "blue.gif")
+    player2 = tk.PhotoImage(file = "white.gif")
+    player1 = tk.PhotoImage(file = "blue.gif")
     board = Gui(root)
     root.mainloop()
