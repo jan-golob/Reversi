@@ -17,6 +17,8 @@ class Gui():
         self.color2 = color2
 
         self.globina = 4
+        self.igralec_1 = None
+        self.igralec_2 = None
 
         canvas_width = columns * size
         canvas_height = rows * size
@@ -70,6 +72,7 @@ class Gui():
         self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
 
     def nastavitev_igralcev(self, modri, beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
+        self.prekini_igralce()
         self.igralec_1 = modri
         self.igralec_2 = beli
         self.igralec_1_na_potezi = True
@@ -78,7 +81,6 @@ class Gui():
         self.zacni_igro()
 
     def zacni_igro(self):
-        self.prekini_igralce()
         self.pl = sk.Deska()
         self.refresh()
         self.napis.set("modri igralec na potezi")
@@ -98,12 +100,8 @@ class Gui():
 
     def prekini_igralce(self):
         """Sporoči igralcem, da morajo nehati razmišljati."""
-        self.igralec_1.prekini()
-        self.igralec_2.prekini()
-##        if self.igralec_1_na_potezi:
-##            self.igralec_1.prekini()
-##        else:
-##            self.igralec_2.prekini()
+        if self.igralec_1: self.igralec_1.prekini()
+        if self.igralec_2: self.igralec_2.prekini()
 
     def prekini_in_nastavi(self,modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
         self.prekini_igralce()
