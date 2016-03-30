@@ -251,6 +251,7 @@ class AlphaBeta:
     def prekini(self):
         """Metoda, ki jo pokliče GUI, če je treba nehati razmišljati, ker
            je uporabnik zaprl okno ali izbral novo igro."""
+        logging.debug ("Alphabeta prekinja, self.prekinitev = {0}".format(self.prekinitev))
         self.prekinitev = True
 
     # Zažene minmax iz njim upravlja

@@ -16,6 +16,8 @@ class Gui():
         self.color1 = color1
         self.color2 = color2
 
+        self.globina = 4
+
         canvas_width = columns * size
         canvas_height = rows * size
         
@@ -29,6 +31,7 @@ class Gui():
         file_menu = tk.Menu(menu)
         recent_menu = tk.Menu(menu)
         debug_menu = tk.Menu(menu)
+        tez_menu = tk.Menu(menu)
         menu.add_cascade(label="Nastavitve", menu=file_menu)
         file_menu.add_cascade(label="nacin igranja", menu=recent_menu)
         file_menu.add_cascade(label="Debug", menu=debug_menu)
@@ -37,10 +40,17 @@ class Gui():
         debug_menu.add_command(label="možnosti modri",command=lambda: print(self.pl.moznosti(0)) )
         debug_menu.add_command(label="možnosti beli",command=lambda: print(self.pl.moznosti(1)) )
         file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
-        recent_menu.add_command(label="igralec vs igralec",command=lambda: self.nastavitev_igralcev(Clovek(self),Clovek(self)))
-        recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(GLO))))
-        recent_menu.add_command(label="racunalnik vs igralec",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Clovek(self)))
-        recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.nastavitev_igralcev(Racunalnik(self, sk.AlphaBeta(GLO)),Racunalnik(self, sk.AlphaBeta(GLO))))
+        recent_menu.add_command(label="igralec vs igralec",command=lambda: self.prekini_in_nastavi(Clovek(self),Clovek(self),False,False))
+        recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.prekini_in_nastavi(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True))
+        recent_menu.add_command(label="racunalnik vs igralec",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Clovek(self),True,False))
+        recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Racunalnik(self, sk.AlphaBeta(self.globina)),True,True))
+        ####
+        menu.add_cascade(label="Težavnost", menu=tez_menu)
+        tez_menu.add_command(label="Lahko", command=lambda: self.tezavnost(2))
+        tez_menu.add_command(label="Normalno", command=lambda: self.tezavnost(3))
+        tez_menu.add_command(label="Težko", command=lambda: self.tezavnost(4))
+        tez_menu.add_command(label="Zelo Težko", command=lambda: self.tezavnost(5))
+        
         
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
@@ -57,12 +67,14 @@ class Gui():
                 color = self.color1 if color == self.color2 else self.color2
 
 
-        self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(GLO)))
+        self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
 
-    def nastavitev_igralcev(self, modri, beli):
+    def nastavitev_igralcev(self, modri, beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
         self.igralec_1 = modri
         self.igralec_2 = beli
         self.igralec_1_na_potezi = True
+        self.je_prvi_racunalnik = ali_je_racunalnik_1
+        self.je_drugi_racunalnik = ali_je_racunalnik_2
         self.zacni_igro()
 
     def zacni_igro(self):
@@ -71,13 +83,31 @@ class Gui():
         self.refresh()
         self.napis.set("modri igralec na potezi")
         self.igralec_1.igraj()
+        
+    def tezavnost(self,globina):
+        self.globina = globina
+        if self.je_prvi_racunalnik == False and self.je_drugi_racunalnik == False:
+            pass
+        elif self.je_prvi_racunalnik == False and self.je_drugi_racunalnik == True:
+            self.prekini_in_nastavi(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
+        elif self.je_prvi_racunalnik == True and self.je_drugi_racunalnik == False:
+            self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Clovek(self),True,False)
+        else:
+            self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Racunalnik(self, sk.AlphaBeta(self.globina)),True,True)
+            
 
     def prekini_igralce(self):
         """Sporoči igralcem, da morajo nehati razmišljati."""
-        if self.igralec_1_na_potezi:
-            self.igralec_1.prekini()
-        else:
-            self.igralec_2.prekini()
+        self.igralec_1.prekini()
+        self.igralec_2.prekini()
+##        if self.igralec_1_na_potezi:
+##            self.igralec_1.prekini()
+##        else:
+##            self.igralec_2.prekini()
+
+    def prekini_in_nastavi(self,modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
+        self.prekini_igralce()
+        self.nastavitev_igralcev(modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2)
 
     def zapri_okno(self, master):
         """Ta metoda se pokliče, ko uporabnik zapre aplikacijo."""
@@ -258,6 +288,7 @@ class Racunalnik():
             self.gui.canvas.after(100, self.preveri_potezo)
 
     def prekini(self):
+        print(self.mislec)
         # To metodo kliče GUI, če je treba prekiniti razmišljanje.
         if self.mislec:
             logging.debug ("Prekinjamo {0}".format(self.mislec))
@@ -274,6 +305,7 @@ class Racunalnik():
 
             
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     root = tk.Tk()
     root.title("Reversi")
     player2 = tk.PhotoImage(file = "white.gif")
