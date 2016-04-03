@@ -22,38 +22,37 @@ class Gui():
 
         canvas_width = columns * size
         canvas_height = rows * size
-        
+
         self.napis = tk.StringVar(master, value="REVERSI")
         tk.Label(master, textvariable=self.napis).grid(row=2, column=0)
 
         # Glavni menu
-        menu = tk.Menu(master)
-        master.config(menu=menu) # Dodamo menu
+        self.menu = tk.Menu(master)
+        master.config(menu=self.menu) # Dodamo menu
         # Naredimo podmenu "File"
-        file_menu = tk.Menu(menu)
-        recent_menu = tk.Menu(menu)
-        debug_menu = tk.Menu(menu)
-        tez_menu = tk.Menu(menu)
-        menu.add_cascade(label="Nastavitve", menu=file_menu)
-        file_menu.add_cascade(label="nacin igranja", menu=recent_menu)
-        file_menu.add_cascade(label="Debug", menu=debug_menu)
+        self.file_menu = tk.Menu(self.menu)
+        self.recent_menu = tk.Menu(self.menu)
+        self.debug_menu = tk.Menu(self.menu)
+        self.tez_menu = tk.Menu(self.menu)
+        self.menu.add_cascade(label="Nastavitve", menu=self.file_menu)
+        self.file_menu.add_cascade(label="nacin igranja", menu=self.recent_menu)
+        self.file_menu.add_cascade(label="Debug", menu=self.debug_menu)
         # Dodamo izbire v file_menu
-        file_menu.add_separator() # To doda separator v menu
-        debug_menu.add_command(label="možnosti modri",command=lambda: print(self.pl.moznosti(0)) )
-        debug_menu.add_command(label="možnosti beli",command=lambda: print(self.pl.moznosti(1)) )
-        file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
-        recent_menu.add_command(label="igralec vs igralec",command=lambda: self.prekini_in_nastavi(Clovek(self),Clovek(self),False,False))
-        recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.prekini_in_nastavi(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True))
-        recent_menu.add_command(label="racunalnik vs igralec",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Clovek(self),True,False))
-        recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Racunalnik(self, sk.AlphaBeta(self.globina)),True,True))
+        self.file_menu.add_separator() # To doda separator v menu
+        self.debug_menu.add_command(label="možnosti modri",command=lambda: print(self.pl.moznosti(0)) )
+        self.debug_menu.add_command(label="možnosti beli",command=lambda: print(self.pl.moznosti(1)) )
+        self.file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
+        self.recent_menu.add_command(label="igralec vs igralec",command=lambda: self.prekini_in_nastavi(Clovek(self),Clovek(self),False,False))
+        self.recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.prekini_in_nastavi(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True))
+        self.recent_menu.add_command(label="racunalnik vs igralec",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Clovek(self),True,False))
+        self.recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Racunalnik(self, sk.AlphaBeta(self.globina)),True,True))
         ####
-        menu.add_cascade(label="Težavnost", menu=tez_menu)
-        tez_menu.add_command(label="Lahko", command=lambda: self.tezavnost(2))
-        tez_menu.add_command(label="Normalno", command=lambda: self.tezavnost(3))
-        tez_menu.add_command(label="Težko", command=lambda: self.tezavnost(4))
-        tez_menu.add_command(label="Zelo Težko", command=lambda: self.tezavnost(5))
-        
-        
+        self.menu.add_cascade(label="Težavnost", menu=self.tez_menu)
+        self.tez_menu.add_command(label="Lahko", command=lambda: self.tezavnost(2))
+        self.tez_menu.add_command(label="Normalno", command=lambda: self.tezavnost(3))
+        self.tez_menu.add_command(label="Težko", command=lambda: self.tezavnost(4))
+        self.tez_menu.add_command(label="Zelo Težko", command=lambda: self.tezavnost(5))
+
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
 
@@ -71,6 +70,26 @@ class Gui():
 
         self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
 
+    def onemogoci(self):
+        self.recent_menu.entryconfig(1, state="disabled")
+        self.recent_menu.entryconfig(2, state="disabled")
+        self.recent_menu.entryconfig(3, state="disabled")
+        self.recent_menu.entryconfig(4, state="disabled")
+        self.tez_menu.entryconfig(1,state="disabled")
+        self.tez_menu.entryconfig(2,state="disabled")
+        self.tez_menu.entryconfig(3,state="disabled")
+        self.tez_menu.entryconfig(4,state="disabled")
+
+    def omogoci(self):
+        self.recent_menu.entryconfig(1, state="normal")
+        self.recent_menu.entryconfig(2, state="normal")
+        self.recent_menu.entryconfig(3, state="normal")
+        self.recent_menu.entryconfig(4, state="normal")
+        self.tez_menu.entryconfig(1,state="normal")
+        self.tez_menu.entryconfig(2,state="normal")
+        self.tez_menu.entryconfig(3,state="normal")
+        self.tez_menu.entryconfig(4,state="normal")
+
     def nastavitev_igralcev(self, modri, beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
         self.prekini_igralce()
         self.igralec_1 = modri
@@ -84,8 +103,9 @@ class Gui():
         self.pl = sk.Deska()
         self.refresh()
         self.napis.set("modri igralec na potezi")
+        self.canvas.after(500,self.omogoci())
         self.igralec_1.igraj()
-        
+
     def tezavnost(self,globina):
         self.globina = globina
         if self.je_prvi_racunalnik == False and self.je_drugi_racunalnik == False:
@@ -96,7 +116,7 @@ class Gui():
             self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Clovek(self),True,False)
         else:
             self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Racunalnik(self, sk.AlphaBeta(self.globina)),True,True)
-            
+
 
     def prekini_igralce(self):
         """Sporoči igralcem, da morajo nehati razmišljati."""
@@ -104,7 +124,9 @@ class Gui():
         if self.igralec_2: self.igralec_2.prekini()
 
     def prekini_in_nastavi(self,modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
+        self.onemogoci()
         self.prekini_igralce()
+        #tuki mam to zato da slučajno mau mn zabugga
         self.nastavitev_igralcev(modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2)
 
     def zapri_okno(self, master):
@@ -120,7 +142,7 @@ class Gui():
         (a,b) = self.pl.vodi()
         if self.pl.alije_konec()[0]:
             if a > b:
-                napis = "Konec igre zmagovalec je modri z rezultatom " + str(a) + " proti " + str(b) 
+                napis = "Konec igre zmagovalec je modri z rezultatom " + str(a) + " proti " + str(b)
                 self.napis.set(napis)
             else:
                 napis = "Konec igre zmagovalec je beli z rezultatom " + str(b) + " proti " + str(a)
@@ -166,8 +188,8 @@ class Gui():
             self.igralec_1_na_potezi = not self.igralec_1_na_potezi
             self.zamenjaj_napis(self.igralec_1_na_potezi)
             nasprotnik.igraj()
-        
-             
+
+
     def povleci_potezo(self, x, y):
         """kliče funkcijo naredi potezo za primernega igralca
             ali pa zaključi igro"""
@@ -187,7 +209,7 @@ class Gui():
 
     def addpiece(self, image, row, column):
         '''Doda figuro na igralno ploščo v kvadratek (row,column)'''
-        
+
         x0 = (column * self.size) + int(self.size/2)
         y0 = (row * self.size) + int(self.size/2)
 
@@ -197,7 +219,7 @@ class Gui():
     def refresh(self):
         """Izbriše dosedanje figure in jih ponovno nariše glede na novo matriko"""
 
-        
+
         self.canvas.delete("figura")
         for i in range(0,8):
             for j in range(0,8):

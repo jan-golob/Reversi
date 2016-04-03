@@ -254,14 +254,15 @@ class AlphaBeta:
         logging.debug ("Alphabeta prekinja, self.prekinitev = {0}".format(self.prekinitev))
         self.prekinitev = True
 
-    # Zažene minmax iz njim upravlja
+    # Zažene alfabeta iz njim upravlja
     def optimalna_poteza(self, pozicija, igralec):
         self.prekinitev = False # Glavno vlakno bo to nastvilo na True, če moramo nehati
+        # print("optimalna poteza")
         self.jaz = igralec
         self.poteza = None # Sem napišemo potezo, ko jo najdemo
         # Poženemo minimax
         (poteza, vrednost) = self.alphabeta(self.globina, -AlphaBeta.INFI, AlphaBeta.INFI, pozicija.copy(), True)
-        self.jaz = None
+        # self.jaz = None
         self.pozicija = None
         if not self.prekinitev:
             # Potezo izvedemo v primeru, da nismo bili prekinjeni
@@ -270,6 +271,7 @@ class AlphaBeta:
             self.poteza = poteza
     #
     def alphabeta(self, globina, A, B, pozicija, maximiziramo):
+        # print("alfabeta")
         if self.prekinitev:
             # Sporočili so nam, da moramo prekiniti
             logging.debug ("Minimax prekinja, globina = {0}".format(globina))
