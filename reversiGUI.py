@@ -1,10 +1,8 @@
 import tkinter as tk
-import Skelet as sk
+import skelet as sk
 import threading # za vzporedno izvajanje
 import logging # za odpravljanje napak
 
-#GLOBINA MINMAXA
-GLO= 4
 
 class Gui():
     def __init__(self, master, rows=8, columns=8, size=64, color1="gray2", color2="burlywood3"):
@@ -16,6 +14,7 @@ class Gui():
         self.color1 = color1
         self.color2 = color2
 
+        #nastavimo začetno globina
         self.globina = 4
         self.igralec_1 = None
         self.igralec_2 = None
@@ -71,6 +70,7 @@ class Gui():
         self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
 
     def onemogoci(self):
+        """onemogoči spreminjanje nastavitev"""
         self.recent_menu.entryconfig(1, state="disabled")
         self.recent_menu.entryconfig(2, state="disabled")
         self.recent_menu.entryconfig(3, state="disabled")
@@ -81,6 +81,7 @@ class Gui():
         self.tez_menu.entryconfig(4,state="disabled")
 
     def omogoci(self):
+        """omogoči spreminjanje nastavitev"""
         self.recent_menu.entryconfig(1, state="normal")
         self.recent_menu.entryconfig(2, state="normal")
         self.recent_menu.entryconfig(3, state="normal")
@@ -91,6 +92,7 @@ class Gui():
         self.tez_menu.entryconfig(4,state="normal")
 
     def nastavitev_igralcev(self, modri, beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
+        """nastavi igralce in pokliče metodo zacni_igro"""
         self.prekini_igralce()
         self.igralec_1 = modri
         self.igralec_2 = beli
@@ -100,6 +102,7 @@ class Gui():
         self.zacni_igro()
 
     def zacni_igro(self):
+        """nastavi desko in zacne igro"""     
         self.pl = sk.Deska()
         self.refresh()
         self.napis.set("modri igralec na potezi")
@@ -107,6 +110,7 @@ class Gui():
         self.igralec_1.igraj()
 
     def tezavnost(self,globina):
+        """omogoča spreminjanje težavnosti nasprotnika(spreminja se globina alpha beta)"""
         self.globina = globina
         if self.je_prvi_racunalnik == False and self.je_drugi_racunalnik == False:
             pass
@@ -124,6 +128,8 @@ class Gui():
         if self.igralec_2: self.igralec_2.prekini()
 
     def prekini_in_nastavi(self,modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
+        """Metoda se klice pri spreminjanju težavnosti. Metoda prekine dane igralce in
+        uporabi nove nastavitve, da ponovno zažene igro"""
         self.onemogoci()
         self.prekini_igralce()
         #tuki mam to zato da slučajno mau mn zabugga
@@ -139,6 +145,7 @@ class Gui():
         master.destroy()
 
     def zamenjaj_napis(self,igralec):
+        """metoda skrbi za menjavo napisov v GUI"""
         (a,b) = self.pl.vodi()
         if self.pl.alije_konec()[0]:
             if a > b:
@@ -219,7 +226,6 @@ class Gui():
     def refresh(self):
         """Izbriše dosedanje figure in jih ponovno nariše glede na novo matriko"""
 
-
         self.canvas.delete("figura")
         for i in range(0,8):
             for j in range(0,8):
@@ -230,6 +236,7 @@ class Gui():
                         self.addpiece(player1, i, j)
 
     def potencialne(self):
+        """preveri poteze, ki jih določen igralec lahko odigra"""
         if self.igralec_1_na_potezi:
             igr = 0
         else:
@@ -308,10 +315,9 @@ class Racunalnik():
             self.gui.canvas.after(100, self.preveri_potezo)
 
     def prekini(self):
-        print(self.mislec)
         # To metodo kliče GUI, če je treba prekiniti razmišljanje.
         if self.mislec:
-            logging.debug ("Prekinjamo {0}".format(self.mislec))
+            #logging.debug ("Prekinjamo {0}".format(self.mislec))
             # Algoritmu sporočimo, da mora nehati z razmišljanjem
             self.algoritem.prekini()
             # Počakamo, da se vlakno ustavi
