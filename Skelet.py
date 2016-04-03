@@ -146,10 +146,9 @@ class AlphaBeta:
         self.pozicija = None
         if not self.prekinitev:
             # Potezo izvedemo v primeru, da nismo bili prekinjeni
-            #print("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
             #logging.debug("minimax: poteza {0}, vrednost {1}".format(poteza, vrednost))
             self.poteza = poteza
-    #
+            
     def alphabeta(self, globina, A, B, pozicija, maximiziramo):
         # print("alfabeta")
         if self.prekinitev:
@@ -170,7 +169,6 @@ class AlphaBeta:
                 return (None, -AlphaBeta.ZMAGA)
             else:
                 return (None, 0)
-                #assert False, "neki je narobe a je mogoče neodločeno ali pa jst ne znam programirat"
         else:
             if globina == 0:
                 return (None, self.hevristika(self.jaz, pozicija))
@@ -216,7 +214,7 @@ class AlphaBeta:
                                 B = min(B,vrednost_najboljse)
                                 if B <= A:
                                     break
-                assert (najboljsa_poteza is not None), "minimax: izračunana poteza je None"
+                assert (najboljsa_poteza is not None), "alphabeta: izračunana poteza je None"
                 return (najboljsa_poteza, vrednost_najboljse)
         
     # izračuna vrednost pozicije, zankrat le izpiše koliko so vredna posamezna polja

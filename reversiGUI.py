@@ -35,17 +35,15 @@ class Gui():
         self.tez_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label="Nastavitve", menu=self.file_menu)
         self.file_menu.add_cascade(label="nacin igranja", menu=self.recent_menu)
-        self.file_menu.add_cascade(label="Debug", menu=self.debug_menu)
+
         # Dodamo izbire v file_menu
         self.file_menu.add_separator() # To doda separator v menu
-        self.debug_menu.add_command(label="možnosti modri",command=lambda: print(self.pl.moznosti(0)) )
-        self.debug_menu.add_command(label="možnosti beli",command=lambda: print(self.pl.moznosti(1)) )
         self.file_menu.add_command(label="Izhod", command=lambda: self.zapri_okno(master))
         self.recent_menu.add_command(label="igralec vs igralec",command=lambda: self.prekini_in_nastavi(Clovek(self),Clovek(self),False,False))
         self.recent_menu.add_command(label="igralec vs racunalnik",command=lambda: self.prekini_in_nastavi(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True))
         self.recent_menu.add_command(label="racunalnik vs igralec",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Clovek(self),True,False))
         self.recent_menu.add_command(label="racunalnik vs racunalnik",command=lambda: self.prekini_in_nastavi(Racunalnik(self, sk.AlphaBeta(self.globina)),Racunalnik(self, sk.AlphaBeta(self.globina)),True,True))
-        ####
+        # Dodamo izbire v tez_menu
         self.menu.add_cascade(label="Težavnost", menu=self.tez_menu)
         self.tez_menu.add_command(label="Lahko", command=lambda: self.tezavnost(2))
         self.tez_menu.add_command(label="Normalno", command=lambda: self.tezavnost(3))
@@ -66,7 +64,7 @@ class Gui():
                 self.canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill=color)
                 color = self.color1 if color == self.color2 else self.color2
 
-
+        #nastavimo začetno igro
         self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
 
     def onemogoci(self):
