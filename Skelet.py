@@ -142,7 +142,7 @@ class AlphaBeta:
         self.poteza = None # Sem napišemo potezo, ko jo najdemo
         # Poženemo minimax
         (poteza, vrednost) = self.alphabeta(self.globina, -AlphaBeta.INFI, AlphaBeta.INFI, pozicija.copy(), True)
-        # self.jaz = None
+        self.jaz = None
         self.pozicija = None
         if not self.prekinitev:
             # Potezo izvedemo v primeru, da nismo bili prekinjeni

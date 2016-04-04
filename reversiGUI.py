@@ -77,6 +77,7 @@ class Gui():
         self.tez_menu.entryconfig(2,state="disabled")
         self.tez_menu.entryconfig(3,state="disabled")
         self.tez_menu.entryconfig(4,state="disabled")
+        self.canvas.after(1000,self.omogoci())
 
     def omogoci(self):
         """omogoči spreminjanje nastavitev"""
@@ -104,7 +105,7 @@ class Gui():
         self.pl = sk.Deska()
         self.refresh()
         self.napis.set("modri igralec na potezi")
-        self.canvas.after(500,self.omogoci())
+
         self.igralec_1.igraj()
 
     def tezavnost(self,globina):
