@@ -77,7 +77,7 @@ class Gui():
         self.tez_menu.entryconfig(2,state="disabled")
         self.tez_menu.entryconfig(3,state="disabled")
         self.tez_menu.entryconfig(4,state="disabled")
-        self.canvas.after(1000,self.omogoci())
+        self.canvas.after(1000,self.omogoci)
 
     def omogoci(self):
         """omogoči spreminjanje nastavitev"""
