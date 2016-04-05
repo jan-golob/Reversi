@@ -14,6 +14,8 @@ class Gui():
         self.color1 = color1
         self.color2 = color2
 
+        self.prekini = False
+        self.zacetek = True
         #nastavimo začetno globina
         self.globina = 4
         self.igralec_1 = None
@@ -49,6 +51,7 @@ class Gui():
         self.tez_menu.add_command(label="Normalno", command=lambda: self.tezavnost(3))
         self.tez_menu.add_command(label="Težko", command=lambda: self.tezavnost(4))
         self.tez_menu.add_command(label="Zelo Težko", command=lambda: self.tezavnost(5))
+        self.tez_menu.add_command(label="Prekini", command=lambda: self.defenziva())
 
         self.canvas = tk.Canvas(master, width=canvas_width, height=canvas_height)
         self.canvas.grid(row = 1,column = 0)
@@ -67,8 +70,16 @@ class Gui():
         #nastavimo začetno igro
         self.nastavitev_igralcev(Clovek(self),Racunalnik(self, sk.AlphaBeta(self.globina)),False,True)
 
+    def defenziva(self):
+        self.prekini_igralce()
+        self.prekini = True
+        self.omogoci()
+        self.refresh()
+
+    
     def onemogoci(self):
         """onemogoči spreminjanje nastavitev"""
+<<<<<<< HEAD
         self.recent_menu.entryconfig(0, state="disabled")
         self.recent_menu.entryconfig(1, state="disabled")
         self.recent_menu.entryconfig(2, state="disabled")
@@ -98,6 +109,29 @@ class Gui():
         self.tez_menu.entryconfig(3,state="normal")
         self.tez_menu.entryconfig(4,state="normal")
         self.tez_menu.entryconfig(5,state="normal")
+=======
+        if not self.zacetek:
+            self.recent_menu.entryconfig(1, state="disabled")
+            self.recent_menu.entryconfig(2, state="disabled")
+            self.recent_menu.entryconfig(3, state="disabled")
+            self.recent_menu.entryconfig(4, state="disabled")
+            self.tez_menu.entryconfig(1,state="disabled")
+            self.tez_menu.entryconfig(2,state="disabled")
+            self.tez_menu.entryconfig(3,state="disabled")
+            self.tez_menu.entryconfig(4,state="disabled")
+
+    def omogoci(self):
+        """omogoči spreminjanje nastavitev"""
+        if self.prekini:
+            self.recent_menu.entryconfig(1, state="normal")
+            self.recent_menu.entryconfig(2, state="normal")
+            self.recent_menu.entryconfig(3, state="normal")
+            self.recent_menu.entryconfig(4, state="normal")
+            self.tez_menu.entryconfig(1,state="normal")
+            self.tez_menu.entryconfig(2,state="normal")
+            self.tez_menu.entryconfig(3,state="normal")
+            self.tez_menu.entryconfig(4,state="normal")
+>>>>>>> origin/master
 
     def nastavitev_igralcev(self, modri, beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
         """nastavi igralce in pokliče metodo zacni_igro"""
@@ -107,6 +141,8 @@ class Gui():
         self.igralec_1_na_potezi = True
         self.je_prvi_racunalnik = ali_je_racunalnik_1
         self.je_drugi_racunalnik = ali_je_racunalnik_2
+        if self.je_prvi_racunalnik or self.je_drugi_racunalnik: 
+            self.onemogoci()
         self.zacni_igro()
 
     def zacni_igro(self):
@@ -131,15 +167,15 @@ class Gui():
 
 
     def prekini_igralce(self):
-        """Sporoči igralcem, da morajo nehati razmišljati."""
+        """Sporoči igralcem, da morajo nehati razmišljati.""" 
         if self.igralec_1: self.igralec_1.prekini()
         if self.igralec_2: self.igralec_2.prekini()
 
     def prekini_in_nastavi(self,modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
         """Metoda se klice pri spreminjanju težavnosti. Metoda prekine dane igralce in
         uporabi nove nastavitve, da ponovno zažene igro"""
-        self.onemogoci()
         self.prekini_igralce()
+        self.zacetek = False
         #tuki mam to zato da slučajno mau mn zabugga
         self.nastavitev_igralcev(modri,beli,ali_je_racunalnik_1,ali_je_racunalnik_2)
 
@@ -178,11 +214,16 @@ class Gui():
             jaz = self.igralec_1
             neveljaven_napis = "neveljavna poteza modri"
             nasprotnik = self.igralec_2
+            sm_rac = self.je_prvi_racunalnik
         if igralec == 1:
             nasprotnik = self.igralec_1
             jaz = self.igralec_2
             neveljaven_napis = "neveljavna poteza beli"
+<<<<<<< HEAD
         # print(x,y,igralec)
+=======
+            sm_rac = self.je_drugi_racunalnik
+>>>>>>> origin/master
 
         #tu se odigra poteza
         if self.pl.moznosti(igralec) != None:
@@ -221,6 +262,8 @@ class Gui():
 
     def konec(self):
         self.zamenjaj_napis(self.igralec_1_na_potezi)
+        self.prekinitev = True
+        self.omogoci()
 
 
     def addpiece(self, image, row, column):
