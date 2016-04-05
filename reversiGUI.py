@@ -69,26 +69,35 @@ class Gui():
 
     def onemogoci(self):
         """onemogoči spreminjanje nastavitev"""
+        self.recent_menu.entryconfig(0, state="disabled")
         self.recent_menu.entryconfig(1, state="disabled")
         self.recent_menu.entryconfig(2, state="disabled")
         self.recent_menu.entryconfig(3, state="disabled")
         self.recent_menu.entryconfig(4, state="disabled")
+        self.recent_menu.entryconfig(5, state="disabled")
+        self.tez_menu.entryconfig(0,state="disabled")
         self.tez_menu.entryconfig(1,state="disabled")
         self.tez_menu.entryconfig(2,state="disabled")
         self.tez_menu.entryconfig(3,state="disabled")
         self.tez_menu.entryconfig(4,state="disabled")
-        self.canvas.after(1000,self.omogoci)
+        self.tez_menu.entryconfig(5,state="disabled")
+        self.canvas.after(750,self.omogoci)
 
     def omogoci(self):
         """omogoči spreminjanje nastavitev"""
+        #več možnosti je zato da je ziher
+        self.recent_menu.entryconfig(0, state="normal")
         self.recent_menu.entryconfig(1, state="normal")
         self.recent_menu.entryconfig(2, state="normal")
         self.recent_menu.entryconfig(3, state="normal")
         self.recent_menu.entryconfig(4, state="normal")
+        self.recent_menu.entryconfig(5, state="normal")
+        self.tez_menu.entryconfig(0,state="normal")
         self.tez_menu.entryconfig(1,state="normal")
         self.tez_menu.entryconfig(2,state="normal")
         self.tez_menu.entryconfig(3,state="normal")
         self.tez_menu.entryconfig(4,state="normal")
+        self.tez_menu.entryconfig(5,state="normal")
 
     def nastavitev_igralcev(self, modri, beli,ali_je_racunalnik_1,ali_je_racunalnik_2):
         """nastavi igralce in pokliče metodo zacni_igro"""
@@ -173,6 +182,7 @@ class Gui():
             nasprotnik = self.igralec_1
             jaz = self.igralec_2
             neveljaven_napis = "neveljavna poteza beli"
+        # print(x,y,igralec)
 
         #tu se odigra poteza
         if self.pl.moznosti(igralec) != None:
@@ -278,6 +288,7 @@ class Racunalnik():
         self.mislec = None # Vlakno (thread), ki razmišlja
 
     def igraj(self):
+        self.mislec = None
         """Igraj potezo, ki jo vrne algoritem."""
         # Tu sprožimo vzporedno vlakno, ki računa potezo. Ker tkinter ne deluje,
         # če vzporedno vlakno direktno uporablja tkinter (glej http://effbot.org/zone/tkinter-threads.htm),
@@ -304,11 +315,13 @@ class Racunalnik():
 
     def preveri_potezo(self):
         """Vsakih 100ms preveri, ali je algoritem že izračunal potezo."""
-        if self.algoritem.poteza is not None:
+        if (self.algoritem.poteza is not None) and (self.mislec is not None):
             # Algoritem je našel potezo, povleci jo, če ni bilo prekinitve
+            self.mislec.join()
+            self.mislec = None
             self.gui.povleci_potezo(self.algoritem.poteza[0],self.algoritem.poteza[1])
             # Vzporedno vlakno ni več aktivno, zato ga "pozabimo"
-            self.mislec = None
+
         else:
             # Algoritem še ni našel poteze, preveri še enkrat čez 100ms
             self.gui.canvas.after(100, self.preveri_potezo)
